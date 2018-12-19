@@ -1,17 +1,23 @@
-var fourSquareSecret = "client_id=3AISUGDKCWVZPEILE41CLJI4MV0P2A4RBMSWF1JHFXYA2QPT&client_secret=GVMJSGMG4MRM2HDITEFGV0LE0VWRIZEDORPETPRAVDSQ1JY1&v=20181114";
+// Replace clint ID and Secret as necessary
+fourSquareId = "3AISUGDKCWVZPEILE41CLJI4MV0P2A4RBMSWF1JHFXYA2QPT"
+fourSquareSecret = "GVMJSGMG4MRM2HDITEFGV0LE0VWRIZEDORPETPRAVDSQ1JY1"
+var fourSquareSecret = "client_id=" + fourSquareId + "&client_secret=" + fourSquareSecret + "&v=20181114";
 
+// Global variables
 var map;
+var largeInfowindow;
+// Current setting is Boston.
 var latvar = 42.361145;
 var lngvar = -71.057083;
-var largeInfowindow;
-
-var galleries = ko.observableArray();
 var availableCities = [];
+var galleries = ko.observableArray();
 var markerList = ko.observableArray();
+
+// Takes all cities that are currently in the foursquare information, and pushes them to the View All setting in dropdown.
 availableCities.push("View All");
 
-
-var dropdown = document.getElementById('cityDropdown')
+// This function populates the citydropdown list with all cities on the map. 
+var dropdown = document.getElementById('cityDropdown');
 dropdown.addEventListener('change', function(){
     var selectedCity = dropdown.value;
     largeInfowindow.close();
@@ -22,13 +28,14 @@ dropdown.addEventListener('change', function(){
         var marker = galleries()[index].marker;
         if (marker.city === selectedCity || selectedCity === "View All") {
             marker.setVisible(true);
-            markerList.push(galleries()[index].marker)
+            markerList.push(galleries()[index].marker);
         } else {
             marker.setVisible(false);
         } 
     });
 });
 
+// artGallery 
 function artGallery(id, name, location) {
   var self = this;
   self.id = id;
@@ -37,25 +44,24 @@ function artGallery(id, name, location) {
   self.location = {lat: location.lat, lng: location.lng};
   self.displayAddress = location.address + " " + location.city + ", "+ location.state;
   self.city = location.city;
-};
+}
 
 loadGalleries = function (query,lat,lng) {
-    if (query !== "") {
-        query = "&query=" + query;
-    }
-
-    $.get( "https://api.foursquare.com/v2/venues/search?ll=" + lat + "," + lng + query + "&categoryId=4bf58dd8d48988d1e2931735&radius=8000&" + fourSquareSecret, function( data ) {
-        $.each( data.response.venues, function( index, value ) {
-            galleries.push(new artGallery(value.id, value.name, value.location));
-        });
-      }).fail(function() {
-          alert( "Unable to load data from foursquare. Falling back to fixed data" );
-        });;
+  if (query !== "") {
+    query = "&query=" + query;
+  }
+  $.get( "https://api.foursquare.com/v2/venues/search?ll=" + lat + "," + lng + query + "&categoryId=4bf58dd8d48988d1e2931735&radius=8000&" + fourSquareSecret, function( data ) {
+    $.each( data.response.venues, function( index, value ) {
+      galleries.push(new artGallery(value.id, value.name, value.location));
+    });
+  }).fail(function() {
+    alert( "Unable to load data from foursquare. Falling back to fixed data" );
+  });
 };
 
 function initMap () {
 
-    //constructor creates a new map.
+    // Constructor creates a new map.
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: latvar, lng: lngvar},
         zoom: 13,
@@ -75,18 +81,17 @@ function initMap () {
       map.setOptions({styles: styles[styleSelector.value]});
     });
 
-
     largeInfowindow = new google.maps.InfoWindow();
     galleries.subscribe(function(changes) {
-        
         for (var i = 0; i < changes.length; i++) {
             var index = changes[i].index;
+
             // Get the position from the location Array.
             var position = galleries()[index].location;
             var title = galleries()[index].title;
             var VENUE_ID = galleries()[index].id;
             var city = galleries()[index].city;
-            
+
             // Create a marker per location, and put into markers Array.
             var marker = new google.maps.Marker({
                 map: map,
@@ -97,27 +102,25 @@ function initMap () {
                 city: city,
                 showInfo: marker => google.maps.event.trigger(marker, 'click')
             });
-
-            galleries()[index].marker = marker
-            markerList.push(marker)
+            galleries()[index].marker = marker;
+            markerList.push(marker);
 
             // Push the unique city to list of available cities
             if (typeof city != "undefined" && availableCities.indexOf(city) == -1) {
                 availableCities.push(city);
             }
-            
-    
+
             // Create an onclick event to open an infowindow at each marker.
             marker.addListener('click', function() {
-              marker.setAnimation(google.maps.Animation.BOUNCE)
-              setTimeout(() => marker.setAnimation(null), 1000)
+              marker.setAnimation(google.maps.Animation.BOUNCE);
+              setTimeout(() => marker.setAnimation(null), 1000);
               populateInfoWindow(galleries()[index], largeInfowindow);
             });        
         }
     }, null, "arrayChange");
+    
     ko.applyBindings(galleries);
     google.maps.event.addDomListener(window, 'load', loadGalleries("",latvar,lngvar));
-
 
     // Function to populate the infowindow when a marker is clicked. 
     function populateInfoWindow(gallery, infowindow) {
@@ -137,15 +140,16 @@ function initMap () {
                 infowindow.setContent(footer);
               }).always(function() {
                 infowindow.open(map, marker);
-              })
+              });
             // Make sure the marker property is cleared if the infowindow is closed
             infowindow.addListener('closeclick', function() {
                 infowindow.marker = null;
             });
-        };
-    };
+        }
+    }
 }
 
+// Styles list to allow map to change colors. Eventually will be worked into styles.json
 var styles = {
     default: null,
     silver: [
@@ -440,4 +444,4 @@ var styles = {
         stylers: [{visibility: 'off'}]
       }
     ]
-}
+};
