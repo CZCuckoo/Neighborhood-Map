@@ -149,6 +149,10 @@ function initMap () {
     }
 }
 
+function googleError(){
+  alert("Google Maps did not load properly. Please check your internet connection, and attempt to load the page again.");
+}
+
 // Styles list to allow map to change colors. Eventually will be worked into styles.json
 var styles = {
     default: null,
