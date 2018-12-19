@@ -1,3 +1,79 @@
+html,
+body {
+    font-family: arial, sans-swerif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    color: white;
+    background: #5D5C61;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+    
+}
+
+.container {
+    display: flex; 
+    justify-content: center;
+    /* flex-flow: row wrap; */
+    height: 80%;
+
+}
+
+.popup {
+    color: black;
+}
+
+li:hover {
+    color: blue;
+    text-decoration: underline;
+}
+
+#header {
+
+    text-align: center;
+
+
+}
+
+#sidenav {
+
+    padding: 10px;
+    background: #938e94;
+    overflow: scroll;
+
+}
+
 #map {
-    height: 1000px;
+    flex: 1;
+    border: 5px solid #938e94;
+
+
+}
+
+#footer {
+    text-align: right;
+    padding: 10px;
+}
+
+
+.map-control {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+    font-family: 'Roboto','sans-serif';
+    margin: 10px;
+    /* Hide the control initially, to prevent it from appearing
+    before the map loads. */
+    display: none;
+}
+
+/* Display the control once it is inside the map. */
+#map .map-control {
+    display: block; 
+}
+
+.selector-control {
+    font-size: 14px;
+    line-height: 30px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
