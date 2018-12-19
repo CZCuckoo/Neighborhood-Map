@@ -14,3 +14,8 @@ All of the code is comprised of three files
     - The map dynamically populates pins, based on the location the view is set to.
     - Each pin is clickable, showing a bouncing animation, and displaying a picture, as well as the address of the location.
     - Each pin also displays the FOURSQUARE logo.
+- Filter by City Dropdown
+    - This dropdown is populated by all of the cities represented on the map.
+    - Selecting a city from this dropdown will filter the list of galleries below by city.
+- List of galleries
+    - Each item is clickable, and performs the same function as clicking on a pin on the map.
